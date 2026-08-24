@@ -1,0 +1,14 @@
+issue,severity,metric,value,treatment,business_impact
+Borrower table repeated snapshots,HIGH,exact duplicate rows,600,Keep latest borrower snapshot by borrower_id; link events through account_id first.,Prevents profile double-counting and inconsistent borrower attribution.
+Account borrower_id missing,HIGH,rows,455,Retain account but exclude borrower-level analyses unless resolvable.,Affects borrower attribution for 455 accounts.
+Event borrower IDs disagree with account master,CRITICAL,payment rows mismatching borrower_id,24617,Use account_id as authoritative account key and derive borrower_id from accounts.,Prevents misattributing recoveries to the wrong borrower.
+Call exact duplicates,MEDIUM,rows,1271,Drop exact duplicate rows before call metrics.,Inflates call counts and answer rates if not removed.
+Call ID conflicts,HIGH,call_ids with conflicting fields,79,Keep highest-completeness/latest event row and flag the call for audit.,79 call IDs have inconsistent source records.
+Payment duplicate events,CRITICAL,exact duplicate rows,486,Deduplicate exact rows and coalesce missing payment references within payment_id.,Exact duplicates inflate successful recovery by ₹25901961.69 (1.97%).
+Payment references are not unique,HIGH,duplicate reference rows,8424,Do not dedupe by reference alone; scope references to payment_id/account_id and event attributes.,"A single reference appears across different accounts, so reference-only dedupe would delete real payments."
+Timezone ambiguity in calls,HIGH,date changes after timezone normalization,11893,Interpret event_at using row timezone and normalize to UTC before date/hour analysis.,"11,893 call dates change; hour-of-day analysis is materially affected."
+Status timestamps inconsistent,HIGH,recorded_at earlier than event_at,30191,"Treat event_at as business time, recorded_at as ingestion time; preserve both and allow late-arriving events.",50.3% of status rows have recorded_at before event_at; sequencing cannot rely on ingestion order alone.
+Missing channel/vendor/agent fields,MEDIUM,null counts,4227,Use explicit Unknown buckets; do not silently impute.,Limits vendor/agent performance attribution.
+Language/client absent,HIGH,data dictionary fields,not present,State as unavailable and do not fabricate segmentation.,Two requested drivers cannot be tested from supplied data.
+Only ~8 months of operating events,HIGH,event coverage,2026-01-01 to 2026-08-08 (calls have late rows to 2026-08-12),Use Jan-Jul as complete-month trend window and label August partial.,Cannot independently reconstruct a full 12-month history from supplied event data.
+Agent master is internally inconsistent,HIGH,agent IDs with >1 employee_code/name/vendor/team/status/joined_at,1000,Use agent_id as event key; do not use employee_code or joined_at for longitudinal tenure analysis without a proper crosswalk.,Agent-level tenure and identity analysis is not reliable.

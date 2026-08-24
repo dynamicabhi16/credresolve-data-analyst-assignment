@@ -1,0 +1,11 @@
+{
+  "jan_recovery": 187229127.59,
+  "jul_recovery": 187242265.08,
+  "jan_to_jul_recovery_pct": 0.00701679817083356,
+  "jan_to_jul_recovery_per_target_pct": 1.171941455544534,
+  "jan_to_jul_payer_rate_pct": -0.49709004865332584,
+  "jan_to_jul_recovery_per_hour_pct": -0.15023708493281385,
+  "jul_vs_jun_recovery_pct": 6.654452197910032,
+  "jul_vs_jun_recovery_per_target_pct": 4.188562110030358,
+  "jul_vs_jun_answer_rate_pct": -4.995133332162349
+}
